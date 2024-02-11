@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/overviewFragment">
+
+    <fragment
+        android:id="@+id/overviewFragment"
+        android:name="ru.elnorte.tinkoffeduapp.ui.overview.OverviewFragment"
+        android:label="OverviewFragment"
+        tools:layout="@layout/overview_fragment">
+        <action
+            android:id="@+id/action_showMovie"
+            app:destination="@id/movieFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieFragment"
+        android:name="ru.elnorte.tinkoffeduapp.ui.movieinfo.MovieFragment"
+        android:label="movieFragment"
+        tools:layout="@layout/movieinfo_fragment">
+        <argument
+            android:name="movieId"
+            app:argType="integer"
+        />
+    </fragment>
+</navigation>

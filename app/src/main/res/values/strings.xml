@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">tinkoffEduApp</string>
+    <string name="popular_text">Популярные</string>
+    <string name="retry">Повторить</string>
+</resources>
