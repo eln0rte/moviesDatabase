@@ -22,7 +22,8 @@
     Repository
 Приложение получает и отображает список популярных фильмов из базы кинопоиска. При клике по карточке
 фильма происходит переход на экран с детальной информацией по фильму. Реализована обработка сетевых ошибок.
-<img src='https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691160.png' width='100'>
-![first](https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691160.png | width=270)
-![second](https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691191.png | width=270)
-![third](https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691231.png | width=270)
+<p>
+<img src='https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691160.png' width='270'>
+<img src='https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691191.png' width='270'>
+<img src='https://github.com/eln0rte/screenshots/blob/0eba7e15718c86ca48d3213139b707e87a74f996/Screenshot_1707691231.png' width='270'>
+
