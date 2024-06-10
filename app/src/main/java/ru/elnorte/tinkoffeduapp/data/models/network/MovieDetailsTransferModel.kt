@@ -110,12 +110,12 @@ data class MovieDetailsTransferModel(
         val genre: String // драма
     )
 }
-fun MovieDetailsTransferModel.asMovieInfoDataModel(): MovieInfoDataModel{
-    return MovieInfoDataModel(id = this.kinopoiskId,
-        poster = this.posterUrl,
-        title = this.nameRu,
-        description = this.description,
-        genre = "Жанры: ${this.genres.joinToString(", "){it.genre}}",
-        origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
-        )
-}
+
+fun MovieDetailsTransferModel.asMovieInfoDataModel(): MovieInfoDataModel = MovieInfoDataModel(
+    id = this.kinopoiskId,
+    poster = this.posterUrl,
+    title = this.nameRu,
+    description = this.description,
+    genre = "Жанры: ${this.genres.joinToString(", ") { it.genre }}",
+    origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
+)

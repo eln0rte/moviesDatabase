@@ -30,6 +30,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/transparent"
             android:onClick="@{() -> clickListener.onClick(movieItem)}"
+            android:onLongClick="@{() -> clickListener.onLongClick(movieItem)}"
         >
 
             <ImageView
@@ -94,9 +95,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="14dp"
 
-                android:visibility="gone"
+                android:visibility="@{movieItem.isFavourite ? View.VISIBLE : View.GONE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/movie_banner"
+
+                app:srcCompat="@drawable/baseline_star_24"
                 tools:srcCompat="@drawable/baseline_star_24"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>

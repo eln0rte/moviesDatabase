@@ -23,13 +23,23 @@ class OverviewViewModel(private val repo: MovieRepository) : ViewModel() {
     val navigateToMovie: LiveData<Int?>
         get() = _navigateToMovie
 
+    private val _state = MutableLiveData<ScreenState?>()
+    val state: LiveData<ScreenState?>
+        get() = _state
+
+    private var favsChecked = false
     fun update() {
+        _state.value = ScreenState.Loading
         viewModelScope.launch {
             try {
-                _model.value = repo.getTopMovies()
+                val test = repo.getTopMovies(favsChecked)
+                _model.value = test
+                _state.value = ScreenState.Success
             } catch (e: ConnectException) {
+                _state.value = ScreenState.Error(e.message)
                 _error.value = e.message
             } catch (e: Exception) {
+                _state.value = ScreenState.Error(e.message)
                 _error.value = e.message
             }
         }
@@ -52,4 +62,41 @@ class OverviewViewModel(private val repo: MovieRepository) : ViewModel() {
         update()
 
     }
+
+    fun addFavourite(movieId: Int) {
+        viewModelScope.launch {
+            repo.addFav(movieId)
+            _model.value =
+                _model.value?.map{
+                    if (it.id==movieId){
+                        it.copy(isFavourite = !it.isFavourite)
+                    }
+                    else{
+                        it
+                    }
+                }
+            if(favsChecked){
+                update()
+            }
+
+            //update()
+        }
+
+    }
+
+    fun switchToPopular() {
+        favsChecked = false
+        update()
+    }
+
+    fun switchToFavs() {
+        favsChecked = true
+        update()
+    }
+}
+
+sealed class ScreenState() {
+    data class Error(val message: String? = null) : ScreenState()
+    data object Success : ScreenState()
+    data object Loading : ScreenState()
 }

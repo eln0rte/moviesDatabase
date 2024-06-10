@@ -5,6 +5,7 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="ru.elnorte.tinkoffeduapp.ui.overview.ScreenState" />
         <variable
             name="viewModel"
             type="ru.elnorte.tinkoffeduapp.ui.overview.OverviewViewModel" />
@@ -48,39 +49,45 @@
                 app:layout_constraintTop_toTopOf="@+id/textView" />
 
 
+            <!--                android:visibility="@{viewModel.model != null ? View.VISIBLE : View.GONE}"-->
             <androidx.recyclerview.widget.RecyclerView
 
                 android:id="@+id/movies_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
 
+                android:layout_marginTop="17dp"
+                app:hideOnLoading="@{viewModel.state}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:layout_marginTop="17dp"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintVertical_bias="1.0"
                 tools:itemCount="5"
-                tools:listitem="@layout/movie_item_card"
-                android:visibility="@{viewModel.model != null ? View.VISIBLE : View.GONE}"/>
+
+                tools:listitem="@layout/movie_item_card" />
+
             <include
                 android:id="@+id/loading_layer"
                 layout="@layout/loading_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{(viewModel.model ==null &amp;&amp; viewModel.error == null) ? View.VISIBLE : View.GONE}"
+                app:viewModel = "@{viewModel}"
                 tools:visibility="gone"
                 />
+            <!--                android:visibility="@{(viewModel.model ==null &amp;&amp; viewModel.error == null) ? View.VISIBLE : View.GONE}"-->
             <include
                 android:id="@+id/error_layer"
                 layout="@layout/error_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{viewModel.error != null ? View.VISIBLE : View.GONE}"
-                app:errorMessage="@{viewModel.error}"
                 app:viewModel = "@{viewModel}"
                 tools:visibility="gone"/>
+            <!--                android:visibility="@{viewModel.error != null ? View.VISIBLE : View.GONE}"-->
+            <!--                app:errorMessage="@{viewModel.error}"-->
+            <!--                app:viewModel = "@{viewModel}"-->
             <LinearLayout
                 android:id="@+id/bottom_bar"
                 android:layout_width="match_parent"
@@ -88,7 +95,7 @@
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -102,6 +109,7 @@
                     android:layout_marginEnd="10dp"
                     android:backgroundTint="@color/main"
                     android:text="Популярные"
+                    android:onClick="@{() ->viewModel.switchToPopular()}"
                     android:textColor="@color/onMain" />
 
                 <Button
@@ -112,6 +120,7 @@
                     android:layout_marginStart="10dp"
                     android:backgroundTint="@color/main"
                     android:text="Избранное"
+                    android:onClick="@{() ->viewModel.switchToFavs()}"
                     android:textColor="@color/onMain" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

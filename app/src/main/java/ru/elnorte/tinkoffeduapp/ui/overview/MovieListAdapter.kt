@@ -57,6 +57,7 @@ class MovieDiffCallBack : DiffUtil.ItemCallback<MovieOverviewDataModel>() {
 }
 
 
-class MovieClickListener(val clickListener: (movieId: Int) -> Unit) {
+class MovieClickListener(val clickListener: (movieId: Int) -> Unit,val longClickListener: (movieId: Int) -> Unit) {
     fun onClick(movie: MovieOverviewDataModel) = clickListener(movie.id)
+    fun onLongClick(movie: MovieOverviewDataModel): Boolean {longClickListener(movie.id);return true}
 }

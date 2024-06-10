@@ -6,5 +6,5 @@ data class MovieInfoDataModel(
     val title: String,
     val description: String,
     val genre: String,
-    val origin: String
+    val origin: String,
 )

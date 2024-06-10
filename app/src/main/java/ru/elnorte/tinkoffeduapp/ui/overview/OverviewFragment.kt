@@ -14,20 +14,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
+import com.google.android.material.snackbar.Snackbar
 import ru.elnorte.tinkoffeduapp.R
 import ru.elnorte.tinkoffeduapp.data.movierepository.MovieRepository
+import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabase
+import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabaseDao
 import ru.elnorte.tinkoffeduapp.databinding.OverviewFragmentBinding
 
 class OverviewFragment : Fragment() {
 
 
     lateinit var viewModel: OverviewViewModel
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,15 +36,22 @@ class OverviewFragment : Fragment() {
         val binding: OverviewFragmentBinding =
             DataBindingUtil.inflate(inflater, R.layout.overview_fragment, container, false)
 
-        val repo = MovieRepository()
+        val application = requireNotNull(this.activity).application
+        val dao = FavDatabase.getInstance(application).favDatabaseDao
+        val repo = MovieRepository(dao)
         val viewModelFactory = OverviewViewModelFactory(repo)
 
         viewModel = ViewModelProvider(this, viewModelFactory).get(OverviewViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        val adapter = MovieListAdapter(MovieClickListener {
-            viewModel.showMovie(it)
-        })
+        val adapter = MovieListAdapter(
+            MovieClickListener({
+                viewModel.showMovie(it)
+            },
+                {
+                    viewModel.addFavourite(it)
+                })
+        )
         binding.moviesList.adapter = adapter
 
         try {
@@ -67,4 +73,5 @@ class OverviewFragment : Fragment() {
 
         return binding.root
     }
+
 }

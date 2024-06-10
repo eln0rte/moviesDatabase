@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import ru.elnorte.tinkoffeduapp.R
 import ru.elnorte.tinkoffeduapp.data.movierepository.MovieRepository
+import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabase
 import ru.elnorte.tinkoffeduapp.databinding.MovieinfoFragmentBinding
 import ru.elnorte.tinkoffeduapp.databinding.OverviewFragmentBinding
 import ru.elnorte.tinkoffeduapp.ui.overview.OverviewFragmentDirections
@@ -22,10 +23,6 @@ class MovieFragment : Fragment() {
 
     lateinit var viewModel: MovieViewModel
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,7 +30,9 @@ class MovieFragment : Fragment() {
     ): View? {
         val binding: MovieinfoFragmentBinding =
             DataBindingUtil.inflate(inflater, R.layout.movieinfo_fragment, container, false)
-        val repo = MovieRepository()
+        val application = requireNotNull(this.activity).application
+        val dao = FavDatabase.getInstance(application).favDatabaseDao
+        val repo = MovieRepository(dao)
         val viewModelFactory = MovieViewModelFactory(repo)
         viewModel = ViewModelProvider(this, viewModelFactory).get(MovieViewModel::class.java)
         binding.viewModel = viewModel
@@ -41,7 +40,6 @@ class MovieFragment : Fragment() {
         binding.backArrow.setOnClickListener { this.findNavController().navigateUp() }
         val arguments = MovieFragmentArgs.fromBundle(requireArguments())
         viewModel.fetchMovieDetails(arguments.movieId)
-
 
         return binding.root
     }

@@ -57,13 +57,12 @@ data class TopMoviesTransferModel(
     }
 }
 
-fun TopMoviesTransferModel.asMovieOverviewDataModel() : List<MovieOverviewDataModel>{
-    return this.films.map{
-        MovieOverviewDataModel(
-            id = it.filmId,
-            poster = it.posterUrlPreview,
-            title = it.nameRu,
-            info = "${it.genres[0].genre} (${it.year})"
-        )
-    }
+fun TopMoviesTransferModel.asMovieOverviewDataModel(): List<MovieOverviewDataModel> = films.map {
+    MovieOverviewDataModel(
+        id = it.filmId,
+        poster = it.posterUrlPreview,
+        title = it.nameRu,
+        info = "${it.genres[0].genre} (${it.year})",
+        isFavourite = false
+    )
 }
