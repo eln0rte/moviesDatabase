@@ -8,8 +8,9 @@ import kotlinx.coroutines.launch
 import ru.elnorte.tinkoffeduapp.data.movierepository.MovieRepository
 import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
 import java.net.ConnectException
+import javax.inject.Inject
 
-class OverviewViewModel(private val repo: MovieRepository) : ViewModel() {
+class OverviewViewModel @Inject constructor(private val repo: MovieRepository) : ViewModel() {
 
     private val _model = MutableLiveData<List<MovieOverviewDataModel>>()
     val model: LiveData<List<MovieOverviewDataModel>>
@@ -67,15 +68,14 @@ class OverviewViewModel(private val repo: MovieRepository) : ViewModel() {
         viewModelScope.launch {
             repo.addFav(movieId)
             _model.value =
-                _model.value?.map{
-                    if (it.id==movieId){
+                _model.value?.map {
+                    if (it.id == movieId) {
                         it.copy(isFavourite = !it.isFavourite)
-                    }
-                    else{
+                    } else {
                         it
                     }
                 }
-            if(favsChecked){
+            if (favsChecked) {
                 update()
             }
 
