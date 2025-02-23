@@ -2,8 +2,8 @@ package ru.elnorte.tinkoffeduapp.data.models.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import ru.elnorte.tinkoffeduapp.data.models.FavDatabaseModel
 import ru.elnorte.tinkoffeduapp.ui.models.MovieInfoDataModel
-import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
 
 @JsonClass(generateAdapter = true)
 data class MovieDetailsTransferModel(
@@ -115,6 +115,17 @@ fun MovieDetailsTransferModel.asMovieInfoDataModel(): MovieInfoDataModel = Movie
     id = this.kinopoiskId,
     poster = this.posterUrl,
     title = this.nameRu,
+    description = this.description,
+    genre = "Жанры: ${this.genres.joinToString(", ") { it.genre }}",
+    origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
+)
+
+fun MovieDetailsTransferModel.asMovieDatabaseModel(): FavDatabaseModel = FavDatabaseModel(
+    id = this.kinopoiskId,
+    poster = this.posterUrl,
+    posterSmall = this.posterUrlPreview ?: this.posterUrl,
+    title = this.nameRu,
+    info = "${this.genres[0].genre} (${this.year})",
     description = this.description,
     genre = "Жанры: ${this.genres.joinToString(", ") { it.genre }}",
     origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
