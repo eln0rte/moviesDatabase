@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.elnorte.tinkoffeduapp.data.movierepository.MovieRepository
 import ru.elnorte.tinkoffeduapp.ui.models.MovieInfoDataModel
-import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
+import javax.inject.Inject
 
-class MovieViewModel(private val repo: MovieRepository) : ViewModel() {
+class MovieViewModel @Inject constructor(private val repo: MovieRepository) : ViewModel() {
     private val _model = MutableLiveData<MovieInfoDataModel>()
     val model: LiveData<MovieInfoDataModel>
         get() = _model
