@@ -116,8 +116,8 @@ fun MovieDetailsTransferModel.asMovieInfoDataModel(): MovieInfoDataModel = Movie
     poster = this.posterUrl,
     title = this.nameRu,
     description = this.description,
-    genre = "Жанры: ${this.genres.joinToString(", ") { it.genre }}",
-    origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
+    genre = this.genres.joinToString(", ") { it.genre },
+    origin = this.countries.joinToString(", ") { it.country }
 )
 
 fun MovieDetailsTransferModel.asMovieDatabaseModel(): FavDatabaseModel = FavDatabaseModel(
@@ -127,6 +127,6 @@ fun MovieDetailsTransferModel.asMovieDatabaseModel(): FavDatabaseModel = FavData
     title = this.nameRu,
     info = "${this.genres[0].genre} (${this.year})",
     description = this.description,
-    genre = "Жанры: ${this.genres.joinToString(", ") { it.genre }}",
-    origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
+    genre = this.genres.joinToString(", ") { it.genre },
+    origin = this.countries.joinToString(", ") { it.country }
 )

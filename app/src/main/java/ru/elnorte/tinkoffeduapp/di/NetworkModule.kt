@@ -10,10 +10,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import ru.elnorte.tinkoffeduapp.data.movierepository.network.MovieApiService
+import ru.elnorte.tinkoffeduapp.data.remote.MovieRemoteDataSource
+import ru.elnorte.tinkoffeduapp.data.remote.MovieRemoteDataSourceImpl
 import javax.inject.Singleton
 
 @Module
 class NetworkModule {
+
+    @Provides
+    @Singleton
+    fun provideMovieRemoteDataSource(
+        apiService: MovieApiService
+    ): MovieRemoteDataSource = MovieRemoteDataSourceImpl(apiService)
 
     @Provides
     @Singleton

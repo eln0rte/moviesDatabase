@@ -31,7 +31,7 @@ android {
         }
     }
     buildFeatures {
-        dataBinding = true
+        viewBinding = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -44,6 +44,7 @@ android {
 
 dependencies {
     implementation("androidx.room:room-common:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-android:2.8.7")
     val room_version = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.13.1")

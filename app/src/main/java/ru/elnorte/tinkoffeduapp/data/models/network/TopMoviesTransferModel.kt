@@ -3,7 +3,6 @@ package ru.elnorte.tinkoffeduapp.data.models.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
 
 @JsonClass(generateAdapter = true)
 data class TopMoviesTransferModel(
@@ -21,7 +20,7 @@ data class TopMoviesTransferModel(
         @Json(name = "nameEn")
         val nameEn: String?, // Dogman
         @Json(name = "year")
-        val year: String, // 2023
+        val year: String?, // 2023
         @Json(name = "filmLength")
         val filmLength: String?, // 02:37
         @Json(name = "countries")
@@ -55,14 +54,4 @@ data class TopMoviesTransferModel(
             val genre: String? // драма
         )
     }
-}
-
-fun TopMoviesTransferModel.asMovieOverviewDataModel(): List<MovieOverviewDataModel> = films.map {
-    MovieOverviewDataModel(
-        id = it.filmId,
-        poster = it.posterUrlPreview,
-        title = it.nameRu,
-        info = "${it.genres[0].genre} (${it.year})",
-        isFavourite = false
-    )
 }

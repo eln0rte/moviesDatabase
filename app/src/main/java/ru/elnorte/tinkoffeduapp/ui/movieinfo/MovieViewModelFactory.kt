@@ -14,5 +14,4 @@ class MovieViewModelFactory @Inject constructor(private val repo: MovieRepositor
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }

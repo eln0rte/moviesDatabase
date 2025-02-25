@@ -2,71 +2,85 @@ package ru.elnorte.tinkoffeduapp.data.movierepository
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ru.elnorte.tinkoffeduapp.data.models.FavDatabaseModel
 import ru.elnorte.tinkoffeduapp.data.models.asMovieInfoDataModel
 import ru.elnorte.tinkoffeduapp.data.models.asMovieOverviewDataModel
+import ru.elnorte.tinkoffeduapp.data.models.network.TopMoviesTransferModel
+import ru.elnorte.tinkoffeduapp.data.models.network.asMovieDatabaseModel
 import ru.elnorte.tinkoffeduapp.data.models.network.asMovieInfoDataModel
-import ru.elnorte.tinkoffeduapp.data.models.network.asMovieOverviewDataModel
 import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabaseDao
-import ru.elnorte.tinkoffeduapp.data.movierepository.network.MovieApiService
-import ru.elnorte.tinkoffeduapp.ui.models.MovieInfoDataModel
-import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
+import ru.elnorte.tinkoffeduapp.data.remote.MovieRemoteDataSource
+import ru.elnorte.tinkoffeduapp.ui.movieinfo.MovieUiState
+import ru.elnorte.tinkoffeduapp.ui.overview.FragmentType
+import ru.elnorte.tinkoffeduapp.ui.overview.OverviewUiState
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
     private val dao: FavDatabaseDao,
-    private val api: MovieApiService
+    private val remoteDataSource: MovieRemoteDataSource,
+    private val moviesResponseConverter: TopMoviesResponseConverter,
 ) {
 
-    suspend fun getMovie(id: Int): MovieInfoDataModel {
+
+    suspend fun getMovie(id: Int): MovieUiState {
         return withContext(Dispatchers.IO) {
-            if (dao.checkIfExists(id)) {
-                dao.get(id).asMovieInfoDataModel()
+            if (dao.getIds().contains(id)) {
+                getCachedMovie(id)
             } else {
-                api.getMovie(id).asMovieInfoDataModel()
+                getNetworkMovie(id)
             }
         }
     }
 
-    suspend fun getTopMovies(onlyFavs: Boolean): List<MovieOverviewDataModel> {
-        return withContext(Dispatchers.IO) {
-            val dbData = dao.getAll().map { it.asMovieOverviewDataModel() }
-            if (onlyFavs) {
-                dbData
-            } else {
-                val dbIds = dbData.map { it.id }.toSet()
-                val apiData = api.getTopMovies().asMovieOverviewDataModel()
-
-                (dbData + apiData.filterNot { it.id in dbIds })
-                    .sortedBy { it.id }
-            }
-
-        }
+    private suspend fun getNetworkMovie(id: Int): MovieUiState {
+        return remoteDataSource.getMovieDetails(id).fold(
+            onSuccess = { MovieUiState.Success(it.asMovieInfoDataModel()) },
+            onFailure = { error -> MovieUiState.Error(error.toString()) }
+        )
     }
 
-    suspend fun addFav(id: Int) {
-        if (!dao.checkIfExists(id)) {
-            val movieInfo = api.getMovie(id)
-            dao.insert(
-                FavDatabaseModel(
-                    id = movieInfo.kinopoiskId,
-                    poster = movieInfo.posterUrl,
-                    posterSmall = movieInfo.posterUrlPreview ?: movieInfo.posterUrl,
-                    title = movieInfo.nameRu,
-                    info = "${movieInfo.genres[0].genre} (${movieInfo.year})",
-                    description = movieInfo.description,
-                    genre = "Жанры: ${movieInfo.genres.joinToString(", ") { it.genre }}",
-                    origin = "Страны: ${movieInfo.countries.joinToString(", ") { it.country }}"
-                )
+    private suspend fun getCachedMovie(id: Int): MovieUiState {
+        return dao.getMovie(id)?.let {
+            MovieUiState.Success(it.asMovieInfoDataModel())
+        } ?: MovieUiState.Error("Universe collapsed and database was in that universe")
+    }
+
+    suspend fun getTopMovies(): OverviewUiState {
+        return withContext(Dispatchers.IO) {
+            remoteDataSource.getTopMovies().fold(
+                onSuccess = { response ->
+                    markFavs(response)
+                },
+                onFailure = { exception ->
+                    OverviewUiState.Error(exception.message)
+                }
             )
-        } else {
-            dao.delete(id)
         }
+    }
 
+    private suspend fun markFavs(response: TopMoviesTransferModel): OverviewUiState.Success {
+        val ids = dao.getIds()
+        val model = moviesResponseConverter.convertToMovieOverviewDataModel(response, ids)
+        return OverviewUiState.Success(model, FragmentType.OVERVIEW)
+    }
 
+    suspend fun getFavMovies(): OverviewUiState {
+        return withContext(Dispatchers.IO) {
+            OverviewUiState.Success(
+                list = dao.getAll().map { it.asMovieOverviewDataModel() },
+                fragment = FragmentType.FAVORITE
+            )
+        }
+    }
+
+    suspend fun toggleFav(id: Int) {
+        withContext(Dispatchers.IO) {
+            if (dao.getMovie(id) == null) {
+                remoteDataSource.getMovieDetails(id).getOrNull()?.let { details ->
+                    dao.insert(details.asMovieDatabaseModel())
+                }
+            } else {
+                dao.delete(id)
+            }
+        }
     }
 }
-//todo remove this comment
-//genre = "Жанры: ${this.genres.joinToString(", "){it.genre}}",
-//origin = "Страны: ${this.countries.joinToString(", ") { it.country }}"
-//info = "${it.genres[0].genre} (${it.year})"
