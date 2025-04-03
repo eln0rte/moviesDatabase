@@ -4,99 +4,103 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import ru.elnorte.tinkoffeduapp.data.movierepository.MovieRepository
 import ru.elnorte.tinkoffeduapp.ui.models.MovieOverviewDataModel
-import java.net.ConnectException
 import javax.inject.Inject
 
-class OverviewViewModel @Inject constructor(private val repo: MovieRepository) : ViewModel() {
+class OverviewViewModel @Inject constructor(
+    private val repo: MovieRepository,
+) : ViewModel() {
+    private val _state = MutableLiveData<OverviewUiState>()
+    val state: LiveData<OverviewUiState> get() = _state
 
-    private val _model = MutableLiveData<List<MovieOverviewDataModel>>()
-    val model: LiveData<List<MovieOverviewDataModel>>
-        get() = _model
+    private val _effects = MutableSharedFlow<OverviewEffect>()
+    val effects: SharedFlow<OverviewEffect> = _effects.asSharedFlow()
 
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?>
-        get() = _error
+    private var originalList = emptyList<MovieOverviewDataModel>()
 
-    private val _navigateToMovie = MutableLiveData<Int?>()
-    val navigateToMovie: LiveData<Int?>
-        get() = _navigateToMovie
+    init {
+        loadOverview()
+    }
 
-    private val _state = MutableLiveData<ScreenState?>()
-    val state: LiveData<ScreenState?>
-        get() = _state
-
-    private var favsChecked = false
-    fun update() {
-        _state.value = ScreenState.Loading
-        viewModelScope.launch {
-            try {
-                val test = repo.getTopMovies(favsChecked)
-                _model.value = test
-                _state.value = ScreenState.Success
-            } catch (e: ConnectException) {
-                _state.value = ScreenState.Error(e.message)
-                _error.value = e.message
-            } catch (e: Exception) {
-                _state.value = ScreenState.Error(e.message)
-                _error.value = e.message
-            }
+    fun updateSearchQuery(query: String) {
+        (state.value as? OverviewUiState.Success)?.let {
+            val currentList = originalList.filterTitleContains(query)
+            _state.value = it.copy(list = currentList, searchShow = true)
         }
     }
-
-    fun showMovie(movieId: Int) {
-        _navigateToMovie.value = movieId
-    }
-
-    fun showMovieComplete() {
-        _navigateToMovie.value = null
-    }
-
-    fun resetError() {
-        _error.value = null
-    }
-
-    fun retry() {
-        resetError()
-        update()
-
-    }
-
-    fun addFavourite(movieId: Int) {
-        viewModelScope.launch {
-            repo.addFav(movieId)
-            _model.value =
-                _model.value?.map {
-                    if (it.id == movieId) {
-                        it.copy(isFavourite = !it.isFavourite)
-                    } else {
-                        it
-                    }
-                }
-            if (favsChecked) {
-                update()
-            }
-
-            //update()
-        }
-
-    }
-
-    fun switchToPopular() {
-        favsChecked = false
-        update()
-    }
-
     fun switchToFavs() {
-        favsChecked = true
-        update()
-    }
-}
+        if ((state.value as OverviewUiState.Success).fragment == FragmentType.OVERVIEW) {
+            loadFavs()
+        }
 
-sealed class ScreenState() {
-    data class Error(val message: String? = null) : ScreenState()
-    data object Success : ScreenState()
-    data object Loading : ScreenState()
+    }
+    fun switchToOverview() {
+        if ((state.value as? OverviewUiState.Success)?.fragment == FragmentType.FAVORITE) {
+            loadOverview()
+        }
+    }
+    fun toggleFavorite(id: Int) {
+        viewModelScope.launch {
+            repo.toggleFav(id)
+            reloadCurrentState()
+        }
+    }
+    fun retry() {
+        reloadCurrentState()
+    }
+    fun navigateToMovie(movieId: Int) {
+        viewModelScope.launch {
+            _effects.emit(OverviewEffect.NavigateToMovie(movieId))
+        }
+    }
+
+    private fun loadOverview() {
+        _state.value = OverviewUiState.Loading
+        viewModelScope.launch {
+            repo.getTopMovies().also { state ->
+                state.tryUpdateOriginalList()
+                _state.value = state
+            }
+        }
+    }
+
+    private fun loadFavs() {
+        _state.value = OverviewUiState.Loading
+        viewModelScope.launch {
+            repo.getFavMovies().also { state ->
+                state.tryUpdateOriginalList()
+                _state.value = state
+            }
+        }
+    }
+
+    private fun OverviewUiState.tryUpdateOriginalList() {
+        (this as? OverviewUiState.Success)?.run { originalList = list }
+    }
+
+    private fun List<MovieOverviewDataModel>.filterTitleContains(query: String) =
+        filter { it.title.contains(query, ignoreCase = true) }
+
+    private fun reloadCurrentState() {
+
+        when (val current = state.value) {
+            is OverviewUiState.Success -> {
+                reloadSuccess(current)
+            }
+
+            else -> loadOverview()
+        }
+    }
+
+    private fun reloadSuccess(current: OverviewUiState.Success) {
+        when (current.fragment) {
+            FragmentType.FAVORITE -> loadFavs()
+            FragmentType.OVERVIEW -> loadOverview()
+        }
+    }
 }

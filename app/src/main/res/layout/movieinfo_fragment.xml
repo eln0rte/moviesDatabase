@@ -1,129 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-        <import type="android.view.View" />
-        <variable
-            name="viewModel"
-            type="ru.elnorte.tinkoffeduapp.ui.movieinfo.MovieViewModel" />
-    </data>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/movieBanner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="533dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/banner_big" />
 
-        <ImageView
-            android:id="@+id/movie_banner"
+    <ScrollView
+        android:id="@+id/scrollableView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/movieBanner">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="533dp"
-            android:scaleType="centerCrop"
-            app:imageUrl = "@{viewModel.model.poster}"
-            tools:src="@drawable/banner_big"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="@{viewModel.model != null ? View.VISIBLE : View.GONE}"
-            />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <ScrollView
-            android:id="@+id/scrollable_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/movie_banner"
-            app:layout_constraintVertical_bias="0.0"
-            android:visibility="@{viewModel.model != null ? View.VISIBLE : View.GONE}"
-            >
+            <TextView
+                android:id="@+id/movieTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="20dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto"
+                android:singleLine="true"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Аватар" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/movieDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/roboto"
+                android:textSize="14sp"
+                tools:text="Сопротивление собирает отряд для выполнения особой миссии - надо выкрасть чертежи самого совершенного и мертоносного оружия Империи. Не всем суждено вернуться домой, но герои готовы к этому, ведь на кону судьба Галактики" />
 
-                <TextView
-                    android:id="@+id/movie_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="20dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/roboto"
-                    android:singleLine="true"
-                    android:text="@{viewModel.model.title}"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    tools:text="Аватар" />
+            <TextView
+                android:id="@+id/movieGenre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto"
+                android:textSize="14sp"
+                tools:text="Жанры: фантастика, приключения" />
 
-                <TextView
-                    android:id="@+id/movie_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="20dp"
-                    android:fontFamily="@font/roboto"
-                    android:textSize="14sp"
-                    android:text="@{viewModel.model.description}"
-                    tools:text="Сопротивление собирает отряд для выполнения особой миссии - надо выкрасть чертежи самого совершенного и мертоносного оружия Империи. Не всем суждено вернуться домой, но герои готовы к этому, ведь на кону судьба Галактики" />
+            <TextView
+                android:id="@+id/movieOrigin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto"
+                android:textSize="14sp"
+                tools:text="Страны: США" />
+        </LinearLayout>
+    </ScrollView>
 
-                <TextView
-                    android:id="@+id/movie_genre"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/roboto"
-                    android:text="@{viewModel.model.genre}"
-                    android:textSize="14sp"
-                    tools:text="Жанры: фантастика, приключения" />
+    <ImageView
+        android:id="@+id/backArrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="53dp"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/movieBanner" />
 
-                <TextView
-                    android:id="@+id/movie_origin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="32dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/roboto"
-                    android:text="@{viewModel.model.origin}"
-                    android:textSize="14sp"
-                    tools:text="Страны: США" />
+    <include
+        android:id="@+id/loadingLayer"
+        layout="@layout/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-            </LinearLayout>
-        </ScrollView>
-
-        <ImageView
-            android:id="@+id/back_arrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="53dp"
-            android:src="@drawable/baseline_arrow_back_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/movie_banner"
-            android:visibility="@{viewModel.model != null ? View.VISIBLE : View.GONE}"
-            />
-        <include
-            android:id="@+id/loading_layer"
-            layout="@layout/loading_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{(viewModel.model ==null &amp;&amp; viewModel.error == null) ? View.VISIBLE : View.GONE}"
-            tools:visibility="gone"
-            />
-        <include
-            android:id="@+id/error_layer"
-            layout="@layout/error_info_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{viewModel.error != null ? View.VISIBLE : View.GONE}"
-            app:errorMessage="@{viewModel.error}"
-            app:viewModel = "@{viewModel}"
-            tools:visibility="gone"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
+    <include
+        android:id="@+id/errorLayer"
+        layout="@layout/error_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</androidx.constraintlayout.widget.ConstraintLayout>
