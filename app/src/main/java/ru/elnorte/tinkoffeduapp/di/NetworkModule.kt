@@ -63,6 +63,6 @@ class NetworkModule {
     companion object {
         private const val SERVER_URL = "https://kinopoiskapiunofficial.tech/"
         private const val BASE_URL = "$SERVER_URL/api/v2.2/"
-        private const val API_KEY = "e30ffed0-76ab-4dd6-b41f-4c9da2b2735b"
+        private const val API_KEY = ""
     }
 }
