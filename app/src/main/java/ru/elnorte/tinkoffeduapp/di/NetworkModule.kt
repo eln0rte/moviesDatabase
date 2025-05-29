@@ -9,9 +9,11 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import ru.elnorte.tinkoffeduapp.data.movierepository.network.MovieApiService
-import ru.elnorte.tinkoffeduapp.data.remote.MovieRemoteDataSource
-import ru.elnorte.tinkoffeduapp.data.remote.MovieRemoteDataSourceImpl
+import ru.elnorte.data.impl.movierepository.remote.network.MovieApiService
+import ru.elnorte.data.impl.movierepository.MovieRemoteDataSource
+import ru.elnorte.data.impl.movierepository.remote.MovieRemoteDataSourceImpl
+
+import ru.elnorte.tinkoffeduapp.BuildConfig
 import javax.inject.Singleton
 
 @Module
@@ -63,6 +65,6 @@ class NetworkModule {
     companion object {
         private const val SERVER_URL = "https://kinopoiskapiunofficial.tech/"
         private const val BASE_URL = "$SERVER_URL/api/v2.2/"
-        private const val API_KEY = ""
+        private const val API_KEY = BuildConfig.API_KEY
     }
 }

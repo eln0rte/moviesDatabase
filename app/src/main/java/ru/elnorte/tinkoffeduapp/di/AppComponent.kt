@@ -3,8 +3,8 @@ package ru.elnorte.tinkoffeduapp.di
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
-import ru.elnorte.tinkoffeduapp.ui.movieinfo.MovieFragment
-import ru.elnorte.tinkoffeduapp.ui.overview.OverviewFragment
+import ru.elnorte.features.di.FeatureComponent
+import ru.elnorte.data.impl.di.DatabaseModule
 import javax.inject.Singleton
 
 @Singleton
@@ -16,6 +16,6 @@ interface AppComponent {
         fun create(@BindsInstance context: Context): AppComponent
     }
 
-    fun inject(fragment: OverviewFragment)
-    fun inject(fragment: MovieFragment)
+    fun featureComponentFactory(): FeatureComponent.Factory
+
 }
