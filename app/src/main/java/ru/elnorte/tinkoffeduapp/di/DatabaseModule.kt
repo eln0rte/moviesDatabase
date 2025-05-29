@@ -6,9 +6,14 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabase
-import ru.elnorte.tinkoffeduapp.data.movierepository.database.FavDatabaseDao
+import ru.elnorte.data.movierepository.MovieRepository
+import ru.elnorte.data.movierepository.MovieRepositoryImpl
+import ru.elnorte.data.movierepository.TopMoviesResponseConverter
+import ru.elnorte.data.movierepository.database.FavDatabase
+import ru.elnorte.data.movierepository.database.FavDatabaseDao
+import ru.elnorte.data.remote.MovieRemoteDataSource
 import javax.inject.Singleton
+
 
 @Module
 class DatabaseModule {
@@ -27,8 +32,17 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideFavDatabaseDao(database: FavDatabase): FavDatabaseDao = database.favDatabaseDao
+    fun provideFavDatabaseDao(database: FavDatabase) = database.favDatabaseDao
 
     @Provides
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Provides
+    fun provideRepository(
+        dao: FavDatabaseDao,
+        remoteDataSource: MovieRemoteDataSource,
+        moviesResponseConverter: TopMoviesResponseConverter,
+    ): MovieRepository {
+        return MovieRepositoryImpl(dao, remoteDataSource, moviesResponseConverter)
+    }
 }

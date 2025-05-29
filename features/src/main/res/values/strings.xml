@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="popular_title">Популярные</string>
+    <string name="retry">Повторить</string>
+    <string name="favorites_title">Избранное</string>
+    <string name="favorites_network_error">Ошибка синхронизации избранного</string>
+    <string name="favorites_server_error">Ошибка сервера при загрузке избранного</string>
+    <string name="network_error_message">Нет соединения с интернетом</string>
+    <string name="server_error_message">Ошибка сервера</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="popular_button">Популярные</string>
+    <string name="favorite_button">Избранное</string>
+    <string name="genres_placeholder">Жанры: %s</string>
+    <string name="countries_placeholder">Страны: %s</string>
+    <string name="not_found">Не найдено</string>
+    <string name="search_hint">Search…</string>
+</resources>

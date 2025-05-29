@@ -15,4 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "tinkoffEduApp"
 include(":app")
- 
+include(":core")
+include(":data")
+include(":features")
