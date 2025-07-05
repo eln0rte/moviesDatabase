@@ -3,8 +3,6 @@ package ru.elnorte.data.impl.movierepository.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.elnorte.data.api.models.MovieInfoDataModel
-import ru.elnorte.data.api.models.MovieOverviewDataModel
 
 
 @Entity(tableName = "favs_table")
@@ -25,21 +23,4 @@ data class FavDatabaseModel(
     val genre: String,
     @ColumnInfo(name = "origin")
     val origin: String,
-)
-
-internal fun FavDatabaseModel.asMovieInfoDataModel(): MovieInfoDataModel = MovieInfoDataModel(
-    id = this.id,
-    poster = this.poster,
-    title = this.title,
-    description = this.description,
-    genre = this.genre,
-    origin = this.origin,
-)
-
-internal fun FavDatabaseModel.asMovieOverviewDataModel(): MovieOverviewDataModel = MovieOverviewDataModel(
-    id = this.id,
-    poster = this.poster,
-    title = this.title,
-    info = this.info,
-    isFavourite = true,
 )

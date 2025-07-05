@@ -1,10 +1,9 @@
-package ru.elnorte.data.impl.movierepository.database
+package ru.elnorte.data.impl.movierepository.local.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import ru.elnorte.data.impl.movierepository.models.FavDatabaseModel
 
 @Dao
@@ -12,8 +11,6 @@ interface FavDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: FavDatabaseModel)
 
-    @Update
-    suspend fun update(item: FavDatabaseModel)
     @Query("DELETE FROM favs_table WHERE id = :movieId")
     suspend fun delete(movieId: Int)
 

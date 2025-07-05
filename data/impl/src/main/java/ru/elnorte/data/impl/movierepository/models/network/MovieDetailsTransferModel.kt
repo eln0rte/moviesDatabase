@@ -2,8 +2,6 @@ package ru.elnorte.data.impl.movierepository.models.network
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import ru.elnorte.data.api.models.MovieInfoDataModel
-import ru.elnorte.data.impl.movierepository.models.FavDatabaseModel
 
 @JsonClass(generateAdapter = true)
 data class MovieDetailsTransferModel(
@@ -110,23 +108,3 @@ data class MovieDetailsTransferModel(
         val genre: String // драма
     )
 }
-
-internal fun MovieDetailsTransferModel.asMovieInfoDataModel(): MovieInfoDataModel = MovieInfoDataModel(
-    id = this.kinopoiskId,
-    poster = this.posterUrl,
-    title = this.nameRu,
-    description = this.description,
-    genre = this.genres.joinToString(", ") { it.genre },
-    origin = this.countries.joinToString(", ") { it.country }
-)
-
-internal fun MovieDetailsTransferModel.asFavDatabaseModel(): FavDatabaseModel = FavDatabaseModel(
-    id = this.kinopoiskId,
-    poster = this.posterUrl,
-    posterSmall = this.posterUrlPreview ?: this.posterUrl,
-    title = this.nameRu,
-    info = "${this.genres[0].genre} (${this.year})",
-    description = this.description,
-    genre = this.genres.joinToString(", ") { it.genre },
-    origin = this.countries.joinToString(", ") { it.country }
-)

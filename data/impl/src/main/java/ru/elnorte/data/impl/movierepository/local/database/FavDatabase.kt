@@ -1,4 +1,4 @@
-package ru.elnorte.data.impl.movierepository.database
+package ru.elnorte.data.impl.movierepository.local.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

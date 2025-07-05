@@ -7,23 +7,20 @@ import ru.elnorte.data.api.models.MovieListType
 import ru.elnorte.data.api.models.MovieResult
 import ru.elnorte.data.api.models.OverviewResult
 import ru.elnorte.data.api.movierepository.MovieRepository
-import ru.elnorte.data.impl.movierepository.database.FavDatabaseDao
-import ru.elnorte.data.impl.movierepository.models.asMovieInfoDataModel
 import ru.elnorte.data.impl.movierepository.models.network.TopMoviesTransferModel
-import ru.elnorte.data.impl.movierepository.models.network.asFavDatabaseModel
 import javax.inject.Inject
 
 internal class MovieRepositoryImpl @Inject constructor(
-    private val dao: FavDatabaseDao,
+    private val localDataSource: MovieLocalDataSource,
     private val remoteDataSource: MovieRemoteDataSource,
-    private val converter: TopMoviesResponseConverter,
+    private val converter: MoviesConverter,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : MovieRepository {
 
 
     override suspend fun getMovie(id: Int): MovieResult {
         return withContext(defaultDispatcher) {
-            if (dao.getIds().contains(id)) {
+            if (localDataSource.getMoviesIds().contains(id)) {
                 getCachedMovie(id)
             } else {
                 getNetworkMovie(id)
@@ -46,7 +43,7 @@ internal class MovieRepositoryImpl @Inject constructor(
     override suspend fun getFavMovies(): OverviewResult {
         return withContext(defaultDispatcher) {
             OverviewResult.Success(
-                list = dao.getAll().map { converter.convertToOverview(it)},
+                list = localDataSource.getAll().map { converter.convertToOverview(it)},
                 fragment = MovieListType.FAVORITE
             )
         }
@@ -54,12 +51,12 @@ internal class MovieRepositoryImpl @Inject constructor(
 
     override suspend fun toggleFav(id: Int) {
         withContext(defaultDispatcher) {
-            if (dao.getMovie(id) == null) {
+            if (localDataSource.getMovie(id) == null) {
                 remoteDataSource.getMovieDetails(id).getOrNull()?.let { details ->
-                    dao.insert(details.asFavDatabaseModel())
+                    localDataSource.addMovie(converter.convertToFav(details))
                 }
             } else {
-                dao.delete(id)
+                localDataSource.deleteMovie(id)
             }
         }
     }
@@ -72,14 +69,14 @@ internal class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCachedMovie(id: Int): MovieResult {
-        return dao.getMovie(id)?.let {
-            MovieResult.Success(it.asMovieInfoDataModel())
+        return localDataSource.getMovie(id)?.let {
+            MovieResult.Success(converter.convertToInfo(it))
         } ?: MovieResult.Error("Universe collapsed and database was in that universe")
     }
 
     private suspend fun markFavs(response: TopMoviesTransferModel): OverviewResult.Success {
-        val ids = dao.getIds()
-        val model = converter.convertToMovieOverviewDataModel(response, ids)
+        val ids = localDataSource.getMoviesIds()
+        val model = converter.convertToOverview(response, ids)
         return OverviewResult.Success(model, MovieListType.OVERVIEW)
     }
 }

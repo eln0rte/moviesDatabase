@@ -7,11 +7,11 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import ru.elnorte.data.api.movierepository.MovieRepository
-import ru.elnorte.data.impl.movierepository.MovieRepositoryImpl
-import ru.elnorte.data.impl.movierepository.TopMoviesResponseConverter
-import ru.elnorte.data.impl.movierepository.database.FavDatabase
-import ru.elnorte.data.impl.movierepository.database.FavDatabaseDao
+import ru.elnorte.data.impl.movierepository.MovieLocalDataSource
 import ru.elnorte.data.impl.movierepository.MovieRemoteDataSource
+import ru.elnorte.data.impl.movierepository.MovieRepositoryImpl
+import ru.elnorte.data.impl.movierepository.MoviesConverter
+import ru.elnorte.data.impl.movierepository.local.database.FavDatabase
 import javax.inject.Singleton
 
 
@@ -40,12 +40,12 @@ class DatabaseModule {
 
     @Provides
     fun provideRepository(
-        dao: FavDatabaseDao,
+        localDataSource: MovieLocalDataSource,
         remoteDataSource: MovieRemoteDataSource,
     ): MovieRepository {
-        val converter = TopMoviesResponseConverter()
+        val converter = MoviesConverter()
         return MovieRepositoryImpl(
-            dao,
+            localDataSource,
             remoteDataSource,
             converter
         )

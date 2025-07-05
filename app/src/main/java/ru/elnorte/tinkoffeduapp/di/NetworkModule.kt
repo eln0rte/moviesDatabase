@@ -9,10 +9,12 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
-import ru.elnorte.data.impl.movierepository.remote.network.MovieApiService
+import ru.elnorte.data.impl.movierepository.MovieLocalDataSource
 import ru.elnorte.data.impl.movierepository.MovieRemoteDataSource
+import ru.elnorte.data.impl.movierepository.local.MovieLocalDataSourceImpl
+import ru.elnorte.data.impl.movierepository.local.database.FavDatabaseDao
 import ru.elnorte.data.impl.movierepository.remote.MovieRemoteDataSourceImpl
-
+import ru.elnorte.data.impl.movierepository.remote.network.MovieApiService
 import ru.elnorte.tinkoffeduapp.BuildConfig
 import javax.inject.Singleton
 
@@ -24,6 +26,12 @@ class NetworkModule {
     fun provideMovieRemoteDataSource(
         apiService: MovieApiService
     ): MovieRemoteDataSource = MovieRemoteDataSourceImpl(apiService)
+
+    @Provides
+    @Singleton
+    fun provideMovieLocalDataSource(
+        dao: FavDatabaseDao
+    ): MovieLocalDataSource = MovieLocalDataSourceImpl(dao)
 
     @Provides
     @Singleton

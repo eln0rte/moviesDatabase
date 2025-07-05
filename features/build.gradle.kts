@@ -57,9 +57,9 @@ dependencies {
     kapt ("com.google.dagger:dagger-compiler:2.51.1")
 
     //glide
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
-    ksp("com.github.bumptech.glide:compiler:4.16.0")
+    implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+    ksp(libs.glide.compiler)
 
     implementation(project(":data:api"))
 }
