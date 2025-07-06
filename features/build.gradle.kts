@@ -1,9 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp").version("1.6.10-1.0.4")
-    id("androidx.navigation.safeargs")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp.devtools)
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -39,22 +38,21 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.androidx.lifecycle.runtime.android)
 
-    implementation("androidx.lifecycle:lifecycle-runtime-android:2.8.7")
-
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation(libs.androidx.constraintlayout)
 
     //navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     //dagger
-    implementation ("com.google.dagger:dagger:2.51.1")
-    kapt ("com.google.dagger:dagger-compiler:2.51.1")
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 
     //glide
     implementation(libs.glide)

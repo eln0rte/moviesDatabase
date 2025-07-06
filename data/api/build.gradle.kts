@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp.devtools)
 }
 
 android {
@@ -30,22 +30,22 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.appcompat:appcompat:1.7.0")
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
 
     //room
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt ("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 
     //retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.retrofit.converter.scalars)
 
     //dagger
-    implementation ("com.google.dagger:dagger:2.51.1")
-    kapt ("com.google.dagger:dagger-compiler:2.51.1")
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
 }
